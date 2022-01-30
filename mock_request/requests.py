@@ -36,7 +36,7 @@ class MockRequests():
         if not isinstance(requests_data, list):
             raise TypeError("The file %(filepath)s does contain a list.".format(self._requests_data_path))
 
-        pickle_paths = list()
+        pickle_paths = []
         for request_data in requests_data:
             if not isinstance(request_data, dict):
                 raise TypeError("File %(filepath)s does not seem to contain a list of dictionaries.".format(self._requests_data_path))
@@ -72,9 +72,7 @@ class MockRequests():
         # arguments.
 
         # Create dictionary containing the request information.
-        request = {}
-        request['base_url'] = base_url
-
+        request = {'base_url': base_url}
         # Include params into dictionary, if any
         if params:
             request.update(params)
@@ -101,15 +99,12 @@ class MockRequests():
                 path = path.iloc[0]
 
             # Load pickled response
-            response = self._load_pickle(path)
+            return self._load_pickle(path)
 
-        # If it doesn't match, return error response
         else:
             error_list = pd.read_csv(self._errors_data_path)
             error_path = error_list[error_list['error_type'] == self._error_type]['pickle_path'][0]
-            response = self._load_pickle(error_path)
-
-        return response
+            return self._load_pickle(error_path)
 
 
     def _load_pickle(self, path):
